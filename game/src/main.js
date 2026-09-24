@@ -35,6 +35,7 @@ addEventListener('resize', () => {
 const overlay = document.getElementById('begin-overlay');
 const toast = document.getElementById('toast');
 let begun = false;
+let introActive = false;
 function begin() {
   if (begun) return; begun = true;
   audio.start();
@@ -42,7 +43,7 @@ function begin() {
   setTimeout(() => overlay.remove(), 2600);
   showToast('walk with the light — touch a drawing to open it', 7000);
   // opening breath: slow push-in
-  player.setCameraDriven(true);
+  introActive = true;
   const p0 = camera.position.clone();
   const p1 = new THREE.Vector3(0, 6.4, 17);
   const t0 = performance.now();
@@ -52,7 +53,7 @@ function begin() {
     camera.position.lerpVectors(p0, p1, e);
     camera.lookAt(player.pos.x, 2.2, player.pos.z);
     if (k < 1 && begun) requestAnimationFrame(pushIn);
-    else player.setCameraDriven(false);
+    else introActive = false;
   })();
 }
 document.getElementById('begin-btn').addEventListener('click', e => { e.stopPropagation(); begin(); });
@@ -85,7 +86,7 @@ function frame() {
   updateInput();
 
   const camDrivenByGates = gates.driveCamera(player);
-  player.setCameraDriven(camDrivenByGates);
+  player.setCameraDriven(introActive || camDrivenByGates);
   player.update(elapsed, dt);
   gates.update(elapsed, dt);
   world.update(elapsed, dt, camera.position);
