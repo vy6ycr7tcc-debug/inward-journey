@@ -53,10 +53,10 @@ export function buildAudio() {
       master.connect(ctx.destination);
       makeWaterBed();
       // narration drifts in the background, unhurried
-      narrationEl = new Audio('../audio/star-within-narration.m4a');
+      narrationEl = new Audio('../../audio/star-within-narration.m4a');
       narrationEl.volume = 0.85;
       narrationEl.play().catch(() => {
-        narrationEl.src = '../audio/star-within-narration.mp3';
+        narrationEl.src = '../../audio/star-within-narration.mp3';
         narrationEl.play().catch(() => {});
       });
       const btn = document.getElementById('sound-toggle');
