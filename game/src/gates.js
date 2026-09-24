@@ -79,7 +79,7 @@ export function buildGates(scene, camera, audio) {
 
     // the drawing itself — patched with an ink-reveal sweep
     let frame;
-    const tex = loader.load('../art/' + def.art, t => {
+    const tex = loader.load('../../art/' + def.art, t => {
       t.colorSpace = THREE.SRGBColorSpace;
       const asp = t.image.width / t.image.height;
       frame.scale.set(6.4 * Math.min(asp, 1.4), 6.4 / Math.max(asp, 0.72), 1);
