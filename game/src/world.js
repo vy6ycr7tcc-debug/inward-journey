@@ -38,9 +38,9 @@ export function buildWorld(scene) {
   su['sunPosition'].value.copy(SUN_DIR);
   su['cloudScale'].value = 0.00022;
   su['cloudSpeed'].value = 0.000035;
-  su['cloudCoverage'].value = 0.38;
-  su['cloudDensity'].value = 0.45;
-  su['cloudElevation'].value = 0.55;
+  su['cloudCoverage'].value = 0.5;
+  su['cloudDensity'].value = 0.55;
+  su['cloudElevation'].value = 0.9; // bring clouds down toward the horizon
   scene.add(sky);
 
   // ---------- water: real reflective ocean shader ----------
@@ -53,8 +53,8 @@ export function buildWorld(scene) {
     waterNormals: normals,
     sunDirection: SUN_DIR.clone(),
     sunColor: 0xffa050,
-    waterColor: 0x0b2a33,
-    distortionScale: 2.6,
+    waterColor: 0x10333d,
+    distortionScale: 3.4,
     fog: true,
   });
   water.rotation.x = -Math.PI / 2;
@@ -90,21 +90,40 @@ export function buildWorld(scene) {
   }
   scene.add(mistGroup);
 
-  // ---------- distant island silhouettes, dissolving into haze ----------
-  const islMat = new THREE.MeshBasicMaterial({ color: 0x4a3a52, fog: true, transparent: true, opacity: 0.9 });
-  const islands = new THREE.Group();
-  const islDefs = [
-    { x: -260, z: -420, w: 190, h: 34 }, { x: 300, z: -380, w: 150, h: 26 },
-    { x: -80, z: -520, w: 260, h: 44 }, { x: 420, z: 180, w: 170, h: 30 },
-    { x: -430, z: 140, w: 200, h: 36 },
-  ];
-  for (const d of islDefs) {
-    const m = new THREE.Mesh(new THREE.ConeGeometry(d.w / 2, d.h, 7, 1), islMat);
-    m.position.set(d.x, d.h / 2 - 2, d.z);
-    m.rotation.y = Math.random() * 3;
-    islands.add(m);
+  // ---------- distant mountain ridges: painted silhouette panoramas ----------
+  function ridgeTexture(seed, top, bottom) {
+    const c = document.createElement('canvas'); c.width = 2048; c.height = 256;
+    const g = c.getContext('2d');
+    g.clearRect(0, 0, 2048, 256);
+    const grad = g.createLinearGradient(0, 30, 0, 256);
+    grad.addColorStop(0, top); grad.addColorStop(1, bottom);
+    g.fillStyle = grad;
+    g.beginPath(); g.moveTo(0, 256);
+    for (let x = 0; x <= 2048; x += 8) {
+      const nx = x / 2048;
+      const y = 0.52
+        + 0.20 * Math.sin(nx * 6.2832 + seed)
+        + 0.11 * Math.sin(nx * 18.8496 + seed * 2.3)
+        + 0.055 * Math.sin(nx * 50.2655 + seed * 4.1)
+        + 0.028 * Math.sin(nx * 131.9469 + seed * 7.7);
+      g.lineTo(x, Math.max(20, y * 256));
+    }
+    g.lineTo(2048, 256); g.closePath(); g.fill();
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+    return t;
   }
-  scene.add(islands);
+  function addRidge(radius, height, yBase, top, bottom, seed) {
+    const geo = new THREE.CylinderGeometry(radius, radius, height, 72, 1, true);
+    const mat = new THREE.MeshBasicMaterial({
+      map: ridgeTexture(seed, top, bottom),
+      transparent: true, fog: true, side: THREE.BackSide, depthWrite: false,
+    });
+    const m = new THREE.Mesh(geo, mat);
+    m.position.y = yBase + height / 2;
+    scene.add(m);
+  }
+  addRidge(980, 200, -6, '#7a5570', '#4a3049', 1.7);  // far range, hazed
+  addRidge(760, 130, -6, '#453152', '#241b30', 4.2);  // near range, darker
 
   // ---------- floating dust motes of light ----------
   const moteGeo = new THREE.BufferGeometry();
