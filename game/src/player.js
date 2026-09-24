@@ -86,6 +86,7 @@ export function buildPlayer(scene, camera) {
     get pos() { return group.position; },
     setCameraDriven(v) { externallyDriven = v; },
     update(t, dt) {
+      window.__ij_playerPos = group.position;
       // --- look ---
       const { dx, dy } = consumeLook();
       if (!externallyDriven) {
