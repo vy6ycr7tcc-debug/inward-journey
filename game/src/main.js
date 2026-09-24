@@ -22,7 +22,7 @@ renderer.toneMappingExposure = 1.12;
 app.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.1, 2000);
+const camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.1, 9000);
 camera.position.set(0, 7, 26);
 
 // ---------- cinematic post-processing ----------
