@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Inward Journey — The Lake</title>
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <div id="begin-overlay">
+    <div class="begin-inner">
+      <h1>Inward Journey</h1>
+      <p class="subtitle">a meditation you can walk through</p>
+      <button id="begin-btn">touch the water to begin</button>
+      <p class="hint">headphones recommended · sound on</p>
+    </div>
+  </div>
+
+  <div id="caption" class="hidden">
+    <p id="caption-text"></p>
+    <button id="caption-close" aria-label="return">↩ return to the lake</button>
+  </div>
+
+  <div id="toast" class="hidden"></div>
+
+  <button id="sound-toggle" class="hidden" aria-label="toggle sound">♪</button>
+  <div id="joystick" class="hidden"><div id="stick"></div></div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
